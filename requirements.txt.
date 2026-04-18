@@ -1,0 +1,17 @@
+certifi==2026.2.25
+charset-normalizer==3.4.6
+distlib==0.4.0
+filelock==3.25.2
+flake8==7.3.0
+idna==3.11
+mccabe==0.7.0
+platformdirs==4.9.4
+pycodestyle==2.14.0
+pyflakes==3.4.0
+pyTelegramBotAPI==4.32.0
+python-decouple==3.8
+python-discovery==1.2.1
+python-dotenv==1.2.2
+requests==2.33.0
+urllib3==2.6.3
+virtualenv==21.2.0

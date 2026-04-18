@@ -1,50 +1,44 @@
 #Я вернулся спустя 10 дннй от 8 марта,18 марта 2026.Задачи:Взять из исходников код,улучшить панель для админа ,чтобв после /admin работала.
 #19 марта 2:51 пока без админской панели,только не забыть про гитхаб.я в потоке,раз вспомнил даже какие мелочи нужно (например,Портфодио по монтажу без моих мыслей но с датой),несмотря,что на фоне слушаю музыку.
-
 #Исходник,моего опыта.9-10 февраля.
-#структура:импорт,токен,хандлер,клавиаутура,пока       #бот работаeт. по поллинг
+#структура:импорт,токен,хандлер,клавиаутура,пока бот работаeт. по поллинг
+#18 апреля.добавил структуру описанин и исправил код в плане структуры с помощью ии (Dseek)
 
+# Библиотеки
 import os
 import time
-from dotenv import load_dotenv
+import logging
 import telebot
 from telebot import types
 from telebot.apihelper import ApiTelegramException
-import logging 
-import http.client
-import decouple
-from decouple import config
+from decouple import Config, RepositoryEnv
+from pathlib import Path
 
-http.client.HTTPConnection.debuglevel = 5
+# Шифровка токена
+env_path = Path(__file__).parent.parent / '.env'
+config = Config(RepositoryEnv(env_path))
 
-load_dotenv()
+FILTR_BOT_TOKEN = config('FILTR_BOT_TOKEN')
 
-FILTR_BOT_TOKEN = os.environ.get("FILTR_BOT_TOKEN")
-FILTR2_BOT_TOKEN = config('FILTR_BOT_TOKEN', default=None)
+if not FILTR_BOT_TOKEN:
+    print("Ошибка: Токен бота не найден в .env")
+    exit()
 
 logging.basicConfig(level=logging.DEBUG)
 
 print(f"🔍 Bot PID: {os.getpid()}")
+print(f"✅ Token check: {FILTR_BOT_TOKEN[:5]}...{FILTR_BOT_TOKEN[-5:]}")
 
-print(f"!Token check: {FILTR_BOT_TOKEN[5:]}...{FILTR_BOT_TOKEN[-5:]}")
-if FILTR_BOT_TOKEN is None:
-    print(""" Ошибка: Токен бота не найден.
-         Убедитесь, что файл .env существует
-         и содержит строку FILTR2_BOT_TOKEN=""")
-    exit()
-
-print(f"FILTR_BOT_TOKEN получен: {FILTR2_BOT_TOKEN[:5]}...")
+bot = telebot.TeleBot(FILTR_BOT_TOKEN)
 
 class ExceptionHandler:
     def handle(self, e: Exception):
         if isinstance(e, ApiTelegramException) and e.description == "Forbidden: bot was blocked by the user":
-            print(f"Бот заблокирован пользователем {e.result_json['parameters']['chat_id']}")
+            print(f"❌ Бот заблокирован пользователем")
         else:
-            print(f"Другая ошибка: {e}")
+            print(f"⚠️ Другая ошибка: {e}")
 
-bot = telebot.TeleBot(FILTR_BOT_TOKEN, exception_handler=ExceptionHandler())
-
-def save_users(used_id):
+def save_users(user_id):
     with open("users.txt", "a+",encoding="utf-8") as f:
         f.seek(0)
         users = f.read().splitlines()
@@ -81,6 +75,7 @@ def cmd_start(message):
     name = message.from_user.username
     bot.send_message(message.chat.id,
         f"""Добро пожаловать в Filtr,{name}!
+
 Это бот-переходник в мою среду 🍥.
 Прочитайте README, чтоб ознакомиться с ботом.
 
@@ -93,12 +88,11 @@ def cmd_start(message):
 
 
     if os.path.exists("F-tr.Readme.md.md"):
-       try:
+        try:
            with open("F-tr.Readme.md","rb") as file:
-              bot.send_document(message.chat.id,file,caption = """
-Ознакомление с ботом
+              bot.send_document(message.chat.id,file,caption = """Ознакомление с ботом
 для клиента,пользователей""")
-       except Exception as e:
+        except Exception as e:
              bot.send_message(message.chat.id,f"Ошибка при отправке:{str(e)}")
     else:
         bot.send_message(message.chat.id,"Файл F-tr.Readme.md не найден на сервере")
@@ -113,8 +107,8 @@ def markup_keyboard(message):
     markup = types.ReplyKeyboardMarkup(resize_keyboard= True)
     btn1 = types.KeyboardButton("Другие Проекты")
     btn2 = types.KeyboardButton("Портфолио(для клиента")
-    btn3 = types.KeyboardButton( "Тех.Поддержка✅")
-    btn4 = types.KeyboardButton( "Кубик 🎲")
+    btn3 = types.KeyboardButton("Тех.Поддержка✅")
+    btn4 = types.KeyboardButton("Кубик 🎲")
     markup.add(btn1, btn2, btn3, btn4)
     bot.send_message(message.chat.id, "Главное Меню:",reply_markup = markup)
 
@@ -173,7 +167,6 @@ https://t.me/+mgVQDDrM_hE2MDUy """)
 @bot.message_handler(func=lambda message: message.text == "Тех.Поддержка✅")
 def support_greeting(message):
     bot.send_message(message.chat.id, """🥱Техническая Поддержка.Связь с админом/создателем бота.
-
 Функцию обратной связи и дополного сценария  не добавлю
 , поэтому вопросы / проблемы (конкретная) в лс:
 
@@ -181,7 +174,7 @@ def support_greeting(message):
 
 @bot.message_handler(func=lambda message: message.text == "Кубик🎲")
 def send_dice(message):
-    dice = bot.send_dice(chat_id=message.chat.id  ,emoji="🎲")
+    dice = bot.send_dice(chat_id=message.chat.id, emoji="🎲")
     time.sleep(1)
     bot.send_message(chat_id=message.chat.id, text=f"Выпало: {dice.dice.value}")
 
@@ -199,8 +192,7 @@ def alert_broadcast(message):
 
 2. Писать о обновах ботах и связанных с ним сообщения.
 
-3. Предупреждать или напоминать пользователю нужное иногда свои мысли                                                                 
-исключение уместны""")
+3. Предупреждать или напоминать пользователю нужное иногда свои мысли                                                                  исключение уместны""")
         bot.register_next_step_handler(message, start_cast)
     else:
         bot.send_message(message.chat.id, "Нет доступа")
@@ -226,11 +218,4 @@ def start_cast(message):
 if __name__ == "__main__":
      print ("bot is running...")
      bot.infinity_polling(timeout=20, long_polling_timeout=10) 
-
-
-
-
-
-
-
 
