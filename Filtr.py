@@ -89,7 +89,7 @@ def cmd_start(message):
 
     if os.path.exists("F-tr.Readme.md.md"):
         try:
-           with open("F-tr.Readme.md","rb") as file:
+           with open("BotsTGEF/F-tr.Readme.md","rb") as file:
               bot.send_document(message.chat.id,file,caption = """Ознакомление с ботом
 для клиента,пользователей""")
         except Exception as e:
