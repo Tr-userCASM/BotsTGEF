@@ -37,3 +37,8 @@ google-services.json
 venv/
 .venv/
 env/
+
+# log
+*.log
+filtr.log
+erp.log
