@@ -31,20 +31,21 @@ print(f"✅ Token check: {FILTR_BOT_TOKEN[:5]}...{FILTR_BOT_TOKEN[-5:]}")
 
 bot = telebot.TeleBot(FILTR_BOT_TOKEN)
 
+#Анти-Юзерблок
 class ExceptionHandler:
     def handle(self, e: Exception):
         if isinstance(e, ApiTelegramException) and e.description == "Forbidden: bot was blocked by the user":
             print(f"❌ Бот заблокирован пользователем")
         else:
             print(f"⚠️ Другая ошибка: {e}")
-
+#сохрание ip юзера
 def save_users(user_id):
     with open("users.txt", "a+",encoding="utf-8") as f:
         f.seek(0)
         users = f.read().splitlines()
         if str(user_id) not in users:
             f.write(str(user_id) + "\n")
-
+#Админка
 ADMINS = [2135772776]
 
 CHANNEL_ID = -1002025073862
@@ -58,7 +59,7 @@ def check_subscription (user_id):
   except Exception as e:
     print("Ошибка Подписки:",e)
     return False
-
+#Старт + Файл
 @bot.message_handler(commands=['start'])
 def cmd_start(message):
     save_users(message.from_user.id)
@@ -89,7 +90,7 @@ def cmd_start(message):
 
     if os.path.exists("F-tr.Readme.md.md"):
         try:
-           with open("BotsTGEF/F-tr.Readme.md","rb") as file:
+           with open("F-tr.Readme.md","rb") as file:
               bot.send_document(message.chat.id,file,caption = """Ознакомление с ботом
 для клиента,пользователей""")
         except Exception as e:
@@ -102,11 +103,12 @@ def cmd_start(message):
 #усном собеседование прочувствал.Клавитуру допишу
 #Завтра. Полкодк и один день проверки,пока привпствии не готово.Все.хоть сейчас 8:57.Нало сделптт пррверку на подпискки на бота.
 
+#Меню
 @bot.message_handler(commands=['menu'])
 def markup_keyboard(message):
     markup = types.ReplyKeyboardMarkup(resize_keyboard= True)
     btn1 = types.KeyboardButton("Другие Проекты")
-    btn2 = types.KeyboardButton("Портфолио(для клиента")
+    btn2 = types.KeyboardButton("Портфолио(для клиента)")
     btn3 = types.KeyboardButton("Тех.Поддержка✅")
     btn4 = types.KeyboardButton("Кубик 🎲")
     markup.add(btn1, btn2, btn3, btn4)
@@ -146,23 +148,11 @@ https://t.me/+w2Z8SIONrs0zOWMy
 МЕМЫ:
 @me3meDa """)
 
-@bot.message_handler(func=lambda message: message.text == "Портфолио(для клиента")
+@bot.message_handler(func=lambda message: message.text == "Портфолио(для клиента)")
 def portfolio_greeting(message):
     bot.send_message(message.chat.id, """Портфолио
 
-Ссылки на каналы, где показаны мои работы
-
-Дизайн/Инфографика:
-https://t.me/+4Zwp8H90-540MTdi
-
-Баннеры для тг-постов:
-https://t.me/+PRubDk8r4dFlZDBi
-
-Монтаж:
-https://t.me/+Tx2oQqjnRCxkMzk6
-
-Портфолио Боты,Аватарки:
-https://t.me/+mgVQDDrM_hE2MDUy """)
+https://t.me/ma1n_py - Главная страница ,где размешены портфолио """)
 
 @bot.message_handler(func=lambda message: message.text == "Тех.Поддержка✅")
 def support_greeting(message):
@@ -183,6 +173,7 @@ def send_dice(message):
 #16:28.Я решил одно менять сообщение (репли кнопкам,не надо) не обезательно,ведт в процессе работы можно добавить,единсивенное в админке только уведомить пользователей и все.
 #23 марта.23:04 Исправио ошибку в коде с ии.
 
+#Не исправление сообщений,а отправкв сообщений
 @bot.message_handler(commands=['alert_admins'])
 def alert_broadcast(message):
     if message.from_user.id in ADMINS:
