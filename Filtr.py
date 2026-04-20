@@ -88,7 +88,7 @@ def cmd_start(message):
 кубик, связь с админом.""")
 
 
-    if os.path.exists("F-tr.Readme.md.md"):
+    if os.path.exists("F-tr.Readme.md"):
         try:
            with open("F-tr.Readme.md","rb") as file:
               bot.send_document(message.chat.id,file,caption = """Ознакомление с ботом
