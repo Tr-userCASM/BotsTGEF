@@ -108,7 +108,7 @@ def cmd_start(message):
 def markup_keyboard(message):
     markup = types.ReplyKeyboardMarkup(resize_keyboard= True)
     btn1 = types.KeyboardButton("Другие Проекты")
-    btn2 = types.KeyboardButton("Портфолио(для клиента)")
+    btn2 = types.KeyboardButton("Портфолио для клиента ")
     btn3 = types.KeyboardButton("Тех.Поддержка✅")
     btn4 = types.KeyboardButton("Кубик 🎲")
     markup.add(btn1, btn2, btn3, btn4)
@@ -148,7 +148,7 @@ https://t.me/+w2Z8SIONrs0zOWMy
 МЕМЫ:
 @me3meDa """)
 
-@bot.message_handler(func=lambda message: message.text == "Портфолио(для клиента)")
+@bot.message_handler(func=lambda message: message.text == "Портфолио для клиента ")
 def portfolio_greeting(message):
     bot.send_message(message.chat.id, """Портфолио
 
